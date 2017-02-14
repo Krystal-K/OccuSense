@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head> 
+    <meta charset="utf-8" />
+    <title>Home</title>
+    <script src="scripts/jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="Content/bootstrap.min.css" />
+    <script src="scripts/bootstrap.min.js"></script>
+    <script rel="stylesheet" href="Content/bootstrap-theme.min.css"></script>
+    <link rel="stylesheet" href="Content/room.css" />
+    <link rel="stylesheet" href="Content/animate.css" />
+    <script type="text/javascript" src="scripts/main.js"></script>
+    <link rel="stylesheet" href="Content/font-awesome.min.css" />
+    <link href="Content/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="scripts/bootstrap-toggle.min.js"></script>
+    <script src="scripts/progressbar.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-fixed-top" id="navigation">
+        <div class="container-fluid">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#toCollapse" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!--<a class="navbar-brand" href="#"><img src="imgs/OccuSenseLogo.svg" width="40%" height="25%" alt="K Logo" class="center-block img-responsive" /></a> !-->
+            <div class="nav navbar-nav">
+                <ul class="nav nav-pills" id="fullNav">
+                    <li role="presentation">
+                        <a href="#">Occusense</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="home.html">Home</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="room.html">Rooms</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="setup.html">Setup</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="collapse navbar-collapse pull-right" id="toCollapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li role="presentation">
+                        <a href="home.html">Home</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="room.html">Rooms</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="setup.html">Setup</a>
+                    </li>
+                </ul>
+            </div>
+        </div>   
+    </nav>
+    <br><br><br><br><br>
+    
+    <div class="jumbotron">
+        <div class="col-sm-1">
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-lg dropdown-toggle" type="button" data-toggle="dropdown">PHO113
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li><a href="#">PHO210</a></li>
+                <li><a href="#">PHO211</a></li>
+                <li><a href="#">PHO212</a></li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-5">
+                <div id="occupancyProgress"></div>
+                <h3 id="occupancyPercentage"></h3>
+            </div>
+            <div class="col-sm-5">
+                <h3>Current Occupancy</h3>
+                <div class="well well-lg"><p id="currentOccupancy"></p> <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil-square-o fa-2" aria-hidden="true"></i></button></div>
+                <h3>Max Occupancy</h3>
+                <div class="well well-lg"><p id="maxOccupancy"></p> <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil-square-o fa-2" aria-hidden="true"></i></button></div>
+                </div>
+            </div>
+            <div class="col-sm-1">
+            </div>
+    </div>
+    
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-11">
+                <h2>Historical</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-8">
+            </div>
+            <div class="col-sm-2">
+                <h3>Time</h3>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Hourly
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Daily</a></li>
+                        <li><a href="#">Monthly</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </div>
+    
+    
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-11">
+                <h2>Sensors</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>sensor #</th>
+                        <th>on/off</th>
+                        <th>delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>sensor9320</td>
+                        <td><input type="checkbox" checked data-toggle="toggle"></td>
+                        <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash-o" aria-hidden="true"></i></button></td>
+                      </tr>
+                      <tr>
+                        <td>sensor9321</td>
+                        <td><input type="checkbox" checked data-toggle="toggle"></td>
+                        <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash-o" aria-hidden="true"></i></button></td>
+                      </tr>
+                      <tr>
+                        <td>sensor9322</td>
+                        <td><input type="checkbox" checked data-toggle="toggle"></td>
+                        <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash-o" aria-hidden="true"></i></button></td>
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    
+     <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">edit</h4>
+        </div>
+        <div class="modal-body">
+          <div class="login-form-1">
+                <form id="register-form" class="text-left">
+                    <div class="login-form-main-message"></div>
+                    <div class="main-login-form">
+                        <div class="login-group">
+                            <div class="form-group">
+                                <label for="reg_email" class="sr-only">Email</label>
+                                <input type="number" class="form-control" id="reg_email" name="reg_email" placeholder="">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary login-button">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+    
+ <!-- Delete Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this sensor?</p>
+            <button class="btn btn-primary">Yes</button>
+            <button class="btn">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+</body>
+    
+<script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
+<script>
+    
+        
+    var bar = new ProgressBar.Circle(occupancyProgress, {
+  strokeWidth: 6,
+  easing: 'easeInOut',
+  duration: 1400,
+  color: '#7aced6',
+  trailColor: '#eee',
+  trailWidth: 1,
+  svgStyle: null
+});
+
+bar.animate(1.0);  // Number from 0.0 to 1.0
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyAsXzwMeQpaZYf2KZsMBM0WdXDz0xWfug8",
+    authDomain: "occuserver.firebaseapp.com",
+    databaseURL: "https://occuserver.firebaseio.com",
+    storageBucket: "occuserver.appspot.com",
+    messagingSenderId: "334611600995"
+  };
+  firebase.initializeApp(config);
+    
+  // Get a reference to the database service
+    var database = firebase.database(); 
+    var numppl;
+    var maxOcc;
+
+    var tempRef = database.ref('temperature');
+    console.log("count: "+tempRef);
+    tempRef.on("value", function(snapshot){
+        numppl = 0;
+        var data = snapshot.val();
+        for(var key in data) {
+            numppl++;
+        }
+        console.log("numppl: "+numppl);
+        bar.animate(numppl/40);
+        document.getElementById('occupancyPercentage').innerHTML = (numppl/40)*100 + '%';
+        
+        document.getElementById('currentOccupancy').innerHTML = numppl;
+    });
+
+    var roomRef = database.ref('rooms/PHO113');
+    roomRef.on("value", function(snapshot){
+        var data = snapshot.val();
+        maxOcc = data['max_occupancy'];
+        console.log("maxOcc: "+maxOcc);
+        document.getElementById('maxOccupancy').innerHTML = maxOcc;
+    })
+    
+    
+</script>
+</html>

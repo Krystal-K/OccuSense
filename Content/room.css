@@ -42,22 +42,6 @@ body{
     display: none;
 }
 
-img {
-    display: block;
-    margin: 0 auto;
-    width: auto;
-    height: 400px;
-}
-
-
-
-
-
-
-
-
-
-
 @keyframes spin {
     0% {transform:rotate(0deg);}
     100% {transform:rotate(360deg);}
@@ -80,8 +64,21 @@ img {
     100% {transform: scaleX(1); fill: #F3796A;}
 }
 
+h2, h3, p, th, td {
+    color: #aaaaaa;
+    font-weight: bold;
+}
 
+#occupancyProgress {
+  margin: 20px;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
 
+#occupancyPercentage {
+    text-align: center;
+}
 
 /* Half-screen sizes */
 @media screen and (max-width: 775px){
