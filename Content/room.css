@@ -69,6 +69,10 @@ h2, h3, p, th, td {
     font-weight: bold;
 }
 
+#currentOccupancy, #maxOccupancy, #occupancyPercentage{
+    font-size: 3em;
+}
+
 #occupancyProgress {
   margin: 20px;
   width: 200px;
