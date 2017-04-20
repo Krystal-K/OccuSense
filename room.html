@@ -180,6 +180,7 @@
                       <tr>
                         <th>sensor #</th>
                         <th>on/off</th>
+                        <th>record</th>
                         <th>delete</th>
                       </tr>
                     </thead>
@@ -187,6 +188,7 @@
                       <tr>
                         <td id="sensor_id"></td>
                         <td class="sensor_checkbox_class"><input id="sensor_checkbox" type="checkbox" data-toggle="toggle"></td>
+                        <td class="sensor_checkbox_class2"><input id="sensor_record" type="checkbox" data-toggle="toggle" data-on="Recording" data-off="Not Recording" data-onstyle="danger"></td>
                         <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash-o" aria-hidden="true"></i></button></td>
                       </tr>
                     </tbody>
@@ -299,6 +301,7 @@
     var maxOcc;
     var sensorId;
     var sensorOn;
+    var sensorRecord;
     var currentOcc;
     var tempRef;
 
@@ -628,11 +631,20 @@
                 //sensor is on
                 $('#sensor_checkbox').bootstrapToggle('on');
                 sensorOn = true;
-            }
-            else{
+            } else if(data['on'] == 0){
                 //sensor is off
                 $('#sensor_checkbox').bootstrapToggle('off');
                 sensorOn = false;
+            }
+            if(data['record'] == 1){
+                //sensor is recording
+                console.log("currently recording");
+                $('#sensor_record').bootstrapToggle('on');
+                sensorRecord = true;
+            } else if(data['record'] == 0){
+                console.log("currently not recording");
+                $('#sensor_record').bootstrapToggle('on');
+                sensorRecord = false;
             }
         });
     };
@@ -700,7 +712,7 @@
             var data = snapshot.val();
             if(data['on'] == 1){
                 on = true;
-            } else {
+            } else if(data['on'] == 0) {
                 on = false;
             }
         })
@@ -726,8 +738,43 @@
                 $('#sensor_checkbox').bootstrapToggle('on');
             }
         }
-       
     });
+    $(".sensor_checkbox_class2").on("click", function () { 
+            //check to see if the value was actually changed
+            var record;
+            var sensorRef = database.ref('sensors/'+sensorId);
+            sensorRef.on("value", function(snapshot){
+                var data = snapshot.val();
+                if(data['record'] == 1){
+                    record = true;
+                } else if(data['record'] == 0) {
+                    record = false;
+                }
+            });
+        console.log("record value is: "+record);
+            //if database value is different than checked value then change the database value
+            if(record != !$('#sensor_record').prop('checked')){
+                console.log("clicked!");
+                console.log("checked is: "+!$('#sensor_record').prop('checked'));
+                if(!$('#sensor_record').prop('checked') == true){
+                    //checked box is now set to true
+                    console.log("recording");
+
+                    sensorRef.once('value', function(snapshot) {
+                        sensorRef.update({"record": 1});
+                    });
+                    $('#sensor_record').bootstrapToggle('off');
+                }
+                else if(!$('#sensor_record').prop('checked') == false){
+                    //checked box is now set to false
+                    console.log("stopped recording");
+                    sensorRef.once('value', function(snapshot) {
+                        sensorRef.update({"record": 0});
+                    });
+                    $('#sensor_record').bootstrapToggle('on');
+                }
+            }
+     });
 
  });
 </script>
