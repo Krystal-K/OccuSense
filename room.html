@@ -66,7 +66,34 @@
             </div>
         </div>   
     </nav>
-    <br><br><br><br><br>
+    <br><br><br>
+    
+       <!-- Edit Max Occupancy Modal -->
+  <div class="modal fade" id="recordModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button id="record_close_modal" type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Enter number of seconds to record</h4>
+        </div>
+        <div class="modal-body">
+          <div class="login-form-1">
+                <form id="register-form" class="text-left">
+                    <div class="login-form-main-message"></div>
+                    <div class="main-login-form">
+                        <div class="login-group">
+                            <div class="form-group">
+                                <input type="number" class="form-control" id="record_time" name="reg_email" placeholder="">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary login-button" id="record_edit_confirm" type="button">Record</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
     
     <div class="jumbotron">
         <div class="col-sm-1">
@@ -87,10 +114,32 @@
                 <div class="well well-lg"><p id="currentOccupancy"></p> <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editCurrentModal"><i class="fa fa-pencil-square-o fa-2" aria-hidden="true"></i></button></div>
                 <h3>Max Occupancy</h3>
                 <div class="well well-lg"><p id="maxOccupancy"></p> <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editMaxModal"><i class="fa fa-pencil-square-o fa-2" aria-hidden="true"></i></button></div>
-                </div>
             </div>
-            <div class="col-sm-1">
+        </div>
+        <div class="row">
+
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>sensor #</th>
+                        <th>on/off</th>
+                        <th>record</th>
+                        <th>delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td id="sensor_id"></td>
+                        <td class="sensor_checkbox_on"><input id="sensor_checkbox" type="checkbox" data-toggle="toggle"></td>
+                        <td><button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#recordModal">Record</button></td>
+                        <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash-o" aria-hidden="true"></i></button></td>
+                      </tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
     </div>
     
     <div class="jumbotron">
@@ -123,7 +172,7 @@
                 <form method="post">
                   <div class="form-group"> <!-- Date input -->
                     <label class="control-label" for="date">Date</label>
-                    <input class="form-control" id="date" name="date" placeholder="MM/DD/YYY" type="text"/>
+                    <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
                   </div>
                   <div class="form-group"> <!-- Submit button -->
                     <button id="dateButton" class="btn btn-info" type="button">Submit</button>
@@ -163,39 +212,6 @@
         </div> !-->
     </div>
     
-    
-    <div class="jumbotron">
-        <div class="row">
-            <div class="col-sm-1">
-            </div>
-            <div class="col-sm-11">
-                <h2>Sensors</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-10">
-                <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>sensor #</th>
-                        <th>on/off</th>
-                        <th>record</th>
-                        <th>delete</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td id="sensor_id"></td>
-                        <td class="sensor_checkbox_class"><input id="sensor_checkbox" type="checkbox" data-toggle="toggle"></td>
-                        <td class="sensor_checkbox_class2"><input id="sensor_record" type="checkbox" data-toggle="toggle" data-on="Recording" data-off="Not Recording" data-onstyle="danger"></td>
-                        <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash-o" aria-hidden="true"></i></button></td>
-                      </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
     
         <!-- Edit Current Occupancy Modal -->
   <div class="modal fade" id="editCurrentModal" role="dialog">
@@ -300,10 +316,20 @@
     var numppl;
     var maxOcc;
     var sensorId;
-    var sensorOn;
-    var sensorRecord;
     var currentOcc;
-    var tempRef;
+    var room;
+    var roomRef;
+    var resetRef = database.ref('reset');
+    var todayHours = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    var yesterdayHours = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    var todayHoursToAvg = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
+    var yesterdayHoursToAvg = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
+    var lastOcc = 0;
+    var today = new Date();
+    today = DateFormat.format.date(today, "dd-MM-yyyy");
+    var chartDatePicked = today;
+    var datePickedHours = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    var datePickedHoursToAvg = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
 
     var firstroomRef = database.ref('rooms/');
     var roomDropdown = document.getElementById('room_dropdown');
@@ -320,18 +346,9 @@
             });
         });
     };
-    roomDropdownUpdate();/////////////////////////
+    roomDropdownUpdate();
     
-    
-    var room;
-    var roomRef;
-    var resetRef = database.ref('reset');
-    var todayHours = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    var yesterdayHours = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    var todayHoursToAvg = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
-    var yesterdayHoursToAvg = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
-    var index;
-    
+    // Update the historical data graph with specified date
     function ChartRefresh() {
         var chartData;
         if(chartDatePicked == today){
@@ -364,14 +381,35 @@
         });
         
     };
-    var lastOcc = 0;
-    var today = new Date();
-    today = DateFormat.format.date(today, "dd-MM-yyyy");
-    var todayRefresh = function() {
-        
+    
+    var formatIndex = function(index) {
+        if(index == '00'){
+            index = 0;
+        } else if(index == '01'){
+            index = 1;
+        } else if(index == '02'){
+            index = 2;
+        } else if(index == '03'){
+            index = 3;
+        } else if(index == '04'){
+            index = 4;
+        } else if(index == '05'){
+            index = 5;
+        } else if(index == '06'){
+            index = 6;
+        } else if(index == '07'){
+            index = 7;
+        } else if(index == '08'){
+            index = 8;
+        } else if(index == '09'){
+            index = 9;
+        }
+    }
 
+    var todayRefresh = function() {
         var tempRef = database.ref(today);
         var todayCurr = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        var index;
         
         tempRef.on('value', function(snapshot) {
             currentOcc = lastOcc;
@@ -380,9 +418,8 @@
             todayHoursToAvg = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
             snapshot.forEach(function(childSnapshot) {
                 var childData = childSnapshot.val();
-                //check for the room's sensor
+                //Check if sensorId matches current room
                 if(sensorId == childData['sensor_id']){
-                    //NEED TO ADD LOGIC FOR RESET
                     index = childData['time'].substring(0,2);
                     //CONVERTING INDEX PROPERLY
                     if(index == '00'){
@@ -435,6 +472,7 @@
         var yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         yesterday = DateFormat.format.date(yesterday,"dd-MM-yyyy");
+        var index;
         
         var tempRefYest = database.ref(yesterday);
         tempRefYest.on('value', function(snapshot) {
@@ -443,14 +481,12 @@
             yesterdayHoursToAvg = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
             snapshot.forEach(function(childSnapshot) {
                 if(Number.isInteger(childSnapshot.val())){
-                    console.log("childsnapshot: "+ childSnapshot.val());
                     lastOcc = childSnapshot.val();
                     todayRefresh();
                 }
                 var childData = childSnapshot.val();
-                //check for the room's sensor
+                // Check if sensorId matches current room
                 if(sensorId == childData['sensor_id']){
-                    //NEED TO ADD LOGIC FOR RESET
                     index = childData['time'].substring(0,2);
                     //CONVERTING INDEX PROPERLY
                     if(index == '00'){
@@ -484,7 +520,7 @@
                     yesterdayHoursToAvg[index].push(yesterdayCurr[index]);
                 }
             });
-            //if there is no lastOcc, push one and set it equal to lastOcc and call todayRefresh()
+            // If there is no lastOcc, push one to database and refresh today's data
             if(lastOcc == 0 && snapshot.pop != undefined){
                 lastOcc = currentOcc;
                 tempRefYest.on("value", function(snapshot){
@@ -493,6 +529,7 @@
                 todayRefresh();
             }
             //for yesterday graph
+            /*
             for(var i=0; i<yesterdayHours.length; i++){
                 var sum = 0;
                 for(var j=0; j<yesterdayHoursToAvg[i].length; j++){
@@ -505,26 +542,21 @@
                 }
             }
             ChartRefresh();
+            */
             if(snapshot.pop == undefined){
-                console.log("no yesterdaty!!!");
                 lastOcc = 0;
                 todayRefresh();
             }
         });
     }
-    var chartDatePicked = today;
-    var datePickedHours = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    var datePickedHoursToAvg = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
            
-    
+    // Pull occupancy data from selected date to display in historical graph
     var chartDatePickedRefresh = function() {
         var yestDatePicked = new Date();
         yestDatePicked.setDate(yestDatePicked.getDate() - 1);
         yestDatePicked = DateFormat.format.date(yestDatePicked,"dd-MM-yyyy");
-        
-
-        console.log("chartDatePicked: "+chartDatePicked);
         var tempDatePicked = database.ref(chartDatePicked);
+        var index;
         tempDatePicked.on('value', function(snapshot) {
             var datePickedCurr = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
             datePickedHours = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
@@ -541,9 +573,8 @@
             var datePickedCurrentOcc = lastOccPicked;
             snapshot.forEach(function(childSnapshot) {
                 var childData = childSnapshot.val();
-                //check for the room's sensor
+                // Check if sensorId matches current room
                 if(sensorId == childData['sensor_id']){
-                    //NEED TO ADD LOGIC FOR RESET
                     index = childData['time'].substring(0,2);
                     //CONVERTING INDEX PROPERLY
                     if(index == '00'){
@@ -577,7 +608,6 @@
                     datePickedHoursToAvg[index].push(datePickedCurr[index]);
                 }
             });
-            //for datepicked graph
             for(var i=0; i<datePickedHours.length; i++){
                 var sum = 0;
                 for(var j=0; j<datePickedHoursToAvg[i].length; j++){
@@ -594,9 +624,9 @@
         });
     };
     
+    // Pull the current room's sensorId and maxOcc
     var PageRefresh = function() {
         room = roomDropdown.options[roomDropdown.selectedIndex].value;
-        console.log("ROOM: "+room);
         roomRef = database.ref('rooms/'+room);
         roomRef.on("value", function(snapshot){
             var data = snapshot.val();
@@ -612,46 +642,30 @@
         resetRef.on('value', function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
                 var childData = childSnapshot.val();
-                //console.log("reset data: "+childData['time']);
             });
         });
-        
         yesterdayRefresh();
-        
     };
     
     
-    
+    // Updates sensor's toggle information based on database
     function sensorUpdate(){
         var sensorRef = database.ref('sensors/'+sensorId);
         sensorRef.on("value", function(snapshot){
             var data = snapshot.val();
-            //console.log("sensor[on]: "+data['on']);
             if(data['on'] == 1){
-                //sensor is on
+                // Sensor is on
                 $('#sensor_checkbox').bootstrapToggle('on');
-                sensorOn = true;
+                //sensorOn = true;
             } else if(data['on'] == 0){
-                //sensor is off
+                // Sensor is off
                 $('#sensor_checkbox').bootstrapToggle('off');
-                sensorOn = false;
-            }
-            if(data['record'] == 1){
-                //sensor is recording
-                console.log("currently recording");
-                $('#sensor_record').bootstrapToggle('on');
-                sensorRecord = true;
-            } else if(data['record'] == 0){
-                console.log("currently not recording");
-                $('#sensor_record').bootstrapToggle('on');
-                sensorRecord = false;
+                //sensorOn = false;
             }
         });
     };
     
  $(document).ready(function(){
-    console.log("document ready");
-     
       var date_input=$('input[name="date"]'); //our date input has the name "date"
       var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
       var options={
@@ -662,24 +676,21 @@
       };
       date_input.datepicker(options);
      
+     // When historical date is selected, updates graph
      $("#dateButton").on("click", function () {
          var temp = document.getElementById('date').value;
+         //Format the Date to MM/dd/YYYY
          chartDatePicked = temp[3]+temp[4]+'-'+temp[0]+temp[1]+'-'+temp[6]+temp[7]+temp[8]+temp[9];
          chartDatePickedRefresh();
      });
      
+     // When current occupancy is modified, updates page and database
      $("#current_occupancy_edit_confirm").on("click", function () {
-         console.log("CONFIRM CLICKED!!");
-         console.log("current occupancy before change: "+currentOcc);
-         
          var today = new Date();
          today = DateFormat.format.date(today, "dd-MM-yyyy");
          var time = new Date();
          time = DateFormat.format.date(time, "HH:mm:ss");
-         console.log("DATE: "+today);
-         console.log("TIME: "+time);
          var occToPush = -currentOcc+Number(document.getElementById('current_occupancy_edit').value);
-         console.log("OCCTOPUSH: "+occToPush);
          var tempRef = database.ref(today);
          tempRef.push({'time':time,'value':occToPush,'sensor_id':sensorId});
          
@@ -691,10 +702,9 @@
          document.getElementById('current_close_modal').click();
      });
      
+     // When max occupancy is modified, updates page and database
      $("#max_occupancy_edit_confirm").on("click", function () {
-         console.log("CONFIRM CLICKED!!");
          maxOcc = document.getElementById('max_occupancy_edit').value;
-         console.log("MAX OCC ENTERED: "+maxOcc);
          roomRef.on("value", function(snapshot){
             roomRef.update({"max_occupancy":maxOcc});
          });
@@ -703,9 +713,22 @@
          document.getElementById('max_occupancy_edit').value = "";
          document.getElementById('max_close_modal').click();
      });
+     
+      $("#record_edit_confirm").on("click", function () {
+         var recordTime = document.getElementById('record_time').value;
+         if(recordTime == "" || recordTime == 0 || recordTime == null || recordTime == undefined){
+             
+         } else {
+             var sensorRef = database.ref('sensors/'+sensorId);
+             sensorRef.once("value", function(snapshot){
+                sensorRef.update({"record_time":recordTime, "record":1});
+             });
+             document.getElementById('record_close_modal').click();   
+         }
+     });
     
-     $(".sensor_checkbox_class").on("click", function () { 
-        //check to see if the value was actually changed
+     // When sensor's toggle buttons are clicked, update database and toggle display
+     $(".sensor_checkbox_on").on("click", function () { 
         var on;
         var sensorRef = database.ref('sensors/'+sensorId);
         sensorRef.on("value", function(snapshot){
@@ -716,22 +739,15 @@
                 on = false;
             }
         })
-        //if database value is different than checked value then change the database value
+        // Iff database value is different than checked value, then change the database value
         if(on != !$('#sensor_checkbox').prop('checked')){
-            console.log("clicked!");
-            console.log("checked is: "+!$('#sensor_checkbox').prop('checked'));
             if(!$('#sensor_checkbox').prop('checked') == true){
-                //checked box is now set to true
-                console.log("checked box is on");
-
                 sensorRef.once('value', function(snapshot) {
                     sensorRef.update({"on": 1});
                 });
                 $('#sensor_checkbox').bootstrapToggle('off');
             }
             else if(!$('#sensor_checkbox').prop('checked') == false){
-                //checked box is now set to false
-                console.log("checked box is off");
                 sensorRef.once('value', function(snapshot) {
                     sensorRef.update({"on": 0});
                 });
@@ -739,42 +755,6 @@
             }
         }
     });
-    $(".sensor_checkbox_class2").on("click", function () { 
-            //check to see if the value was actually changed
-            var record;
-            var sensorRef = database.ref('sensors/'+sensorId);
-            sensorRef.on("value", function(snapshot){
-                var data = snapshot.val();
-                if(data['record'] == 1){
-                    record = true;
-                } else if(data['record'] == 0) {
-                    record = false;
-                }
-            });
-        console.log("record value is: "+record);
-            //if database value is different than checked value then change the database value
-            if(record != !$('#sensor_record').prop('checked')){
-                console.log("clicked!");
-                console.log("checked is: "+!$('#sensor_record').prop('checked'));
-                if(!$('#sensor_record').prop('checked') == true){
-                    //checked box is now set to true
-                    console.log("recording");
-
-                    sensorRef.once('value', function(snapshot) {
-                        sensorRef.update({"record": 1});
-                    });
-                    $('#sensor_record').bootstrapToggle('off');
-                }
-                else if(!$('#sensor_record').prop('checked') == false){
-                    //checked box is now set to false
-                    console.log("stopped recording");
-                    sensorRef.once('value', function(snapshot) {
-                        sensorRef.update({"record": 0});
-                    });
-                    $('#sensor_record').bootstrapToggle('on');
-                }
-            }
-     });
 
  });
 </script>

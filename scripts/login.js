@@ -21,7 +21,7 @@
     const btnLogin = document.getElementById('loginbtn');
     
     btnLogin.addEventListener('click', e => {
-        const txtEmail = document.getElementById('lg_username');
+      const txtEmail = document.getElementById('lg_username');
       const email = txtEmail.value;
       const txtPassword = document.getElementById('lg_password');
       const pass = txtPassword.value;
